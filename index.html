@@ -243,11 +243,23 @@
             padding: var(--spacing-xs);
             border-radius: 4px;
             transition: var(--transition);
+            position: relative;
+            z-index: 1002; /* Maior que o menu mobile */
         }
         
         .mobile-menu-toggle:hover,
         .mobile-menu-toggle:focus {
             background: var(--extra-light-gray);
+        }
+        
+        .mobile-menu-toggle.active {
+            color: var(--dark-gray);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .mobile-menu-toggle .menu-icon,
+        .mobile-menu-toggle .close-icon {
+            transition: var(--transition);
         }
         
         /* Menu Mobile */
@@ -1324,10 +1336,14 @@
                 </ul>
                 
                 <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu de navegação" aria-expanded="false">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display: none;">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </nav>
@@ -1336,11 +1352,11 @@
         <div class="mobile-overlay" id="mobileOverlay" aria-hidden="true"></div>
         <nav class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Menu mobile">
             <ul>
-                <li><a href="#inicio">Início</a></li>
-                <li><a href="#sobre">A Empresa</a></li>
-                <li><a href="#servicos">Serviços</a></li>
-                <li><a href="#helpdesk">Help Desk</a></li>
-                <li><a href="#contato">Contato</a></li>
+                <li><a href="#inicio" onclick="HartechApp.closeMobileMenu()">Início</a></li>
+                <li><a href="#sobre" onclick="HartechApp.closeMobileMenu()">A Empresa</a></li>
+                <li><a href="#servicos" onclick="HartechApp.closeMobileMenu()">Serviços</a></li>
+                <li><a href="#helpdesk" onclick="HartechApp.closeMobileMenu()">Help Desk</a></li>
+                <li><a href="#contato" onclick="HartechApp.closeMobileMenu()">Contato</a></li>
             </ul>
         </nav>
     </header>
@@ -1818,7 +1834,9 @@
                     submitBtn: document.getElementById('submitBtn'),
                     phoneInput: document.getElementById('telefone'),
                     fadeInElements: document.querySelectorAll('.fade-in'),
-                    smoothLinks: document.querySelectorAll('a[href^="#"]')
+                    smoothLinks: document.querySelectorAll('a[href^="#"]'),
+                    menuIcon: document.querySelector('.menu-icon'),
+                    closeIcon: document.querySelector('.close-icon')
                 };
             },
 
@@ -1945,7 +1963,14 @@
                 this.state.isMobileMenuOpen = true;
                 this.elements.mobileMenu?.classList.add('active');
                 this.elements.mobileOverlay?.classList.add('active');
+                this.elements.mobileMenuToggle?.classList.add('active');
                 this.elements.mobileMenuToggle?.setAttribute('aria-expanded', 'true');
+                this.elements.mobileMenuToggle?.setAttribute('aria-label', 'Fechar menu de navegação');
+                
+                // Trocar ícones
+                if (this.elements.menuIcon) this.elements.menuIcon.style.display = 'none';
+                if (this.elements.closeIcon) this.elements.closeIcon.style.display = 'block';
+                
                 document.body.style.overflow = 'hidden';
             },
 
@@ -1953,7 +1978,14 @@
                 this.state.isMobileMenuOpen = false;
                 this.elements.mobileMenu?.classList.remove('active');
                 this.elements.mobileOverlay?.classList.remove('active');
+                this.elements.mobileMenuToggle?.classList.remove('active');
                 this.elements.mobileMenuToggle?.setAttribute('aria-expanded', 'false');
+                this.elements.mobileMenuToggle?.setAttribute('aria-label', 'Abrir menu de navegação');
+                
+                // Trocar ícones de volta
+                if (this.elements.menuIcon) this.elements.menuIcon.style.display = 'block';
+                if (this.elements.closeIcon) this.elements.closeIcon.style.display = 'none';
+                
                 document.body.style.overflow = '';
             },
 
